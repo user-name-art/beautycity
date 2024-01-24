@@ -86,3 +86,23 @@ class Order(models.Model):
     def __str__(self):
         return f'{self.client}_{self.service}'
 
+
+class Comment(models.Model):
+    order = models.ForeignKey(
+        'Order',
+        on_delete=models.SET_NULL,
+        related_name='comments',
+        null=True
+    )
+    client = models.ForeignKey(
+        'Client',
+        on_delete=models.SET_NULL,
+        related_name='comments',
+        null=True
+    )
+    text = models.TextField('Текст комментария')
+    date = models.DateField('Дата комментария')
+
+    def __str__(self):
+        return f'{self.client}_{self.order}'
+
