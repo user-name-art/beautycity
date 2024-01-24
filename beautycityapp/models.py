@@ -8,6 +8,7 @@ class Studio(models.Model):
     def __str__(self):
         return self.addres
 
+
 class Master(models.Model):
     name = models.CharField('Имя мастера', max_length=50)
     studio = models.ForeignKey(
@@ -19,3 +20,16 @@ class Master(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Slot(models.Model):
+    day = models.DateField()
+    time = models.TimeField()
+    master = models.ForeignKey(
+        'Master',
+        on_delete=models.CASCADE,
+        related_name='masters',
+        null=True)
+    
+    def __str__(self):
+        return f'{self.day}_{self.master}' 
