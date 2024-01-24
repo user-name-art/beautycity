@@ -53,7 +53,10 @@ class Service(models.Model):
 class Client(models.Model):
     name = models.CharField('Имя клиента', max_length=50)
     phone_number = PhoneNumberField('Номер телефона')
-    pdf_file = models.FileField()
+    pdf_file = models.FileField('Согласие на обработку персональных данных')
+
+    def __str__(self):
+        return self.name
 
     
 
