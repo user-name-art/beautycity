@@ -58,5 +58,31 @@ class Client(models.Model):
     def __str__(self):
         return self.name
 
-    
+
+class Order(models.Model):
+    client = models.ForeignKey(
+        'Client',
+        on_delete=models.SET_NULL,
+        related_name='orders',
+        null=True
+    )
+    question = models.CharField('Комментарий к заказу', max_length=300)
+    service = models.ForeignKey(
+        'Service',
+        on_delete=models.SET_NULL,
+        related_name='orders',
+        null=True
+    )
+    promocode = models.CharField(blank=True,null=True, max_length=20)
+    slot = models.ForeignKey(
+        'Slot',
+        on_delete=models.SET_NULL,
+        related_name='orders',
+        null=True
+    )
+    cost = models.DecimalField('Итоговая цена', max_digits=7, decimal_places=2)
+    # studio тут вопросы возникли
+
+    def __str__(self):
+        return f'{self.client}_{self.service}'
 
