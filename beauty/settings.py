@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'beautycityapp'
+    'beautycityapp',
+    "phonenumber_field"
 ]
 
 MIDDLEWARE = [

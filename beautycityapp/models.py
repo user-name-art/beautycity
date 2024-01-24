@@ -1,4 +1,5 @@
 from django.db import models
+from phonenumber_field.modelfields import PhoneNumberField
 
 
 class Studio(models.Model):
@@ -28,8 +29,31 @@ class Slot(models.Model):
     master = models.ForeignKey(
         'Master',
         on_delete=models.CASCADE,
-        related_name='masters',
+        related_name='slots',
         null=True)
     
     def __str__(self):
-        return f'{self.day}_{self.master}' 
+        return f'{self.day}_{self.master}'
+
+
+class Service(models.Model):
+    title = models.CharField('Название услуги', max_length=200)
+    price = models.DecimalField('Цена', max_digits=7, decimal_places=2)
+    picture = models.ImageField('Фото')
+    master = models.ForeignKey(
+        'Master',
+        on_delete=models.CASCADE,
+        related_name='services',
+        null=True)
+    
+    def __str__(self):
+        return f'{self.title}_{self.master}'
+
+
+class Client(models.Model):
+    name = models.CharField('Имя клиента', max_length=50)
+    phone_number = PhoneNumberField('Номер телефона')
+    pdf_file = models.FileField()
+
+    
+
