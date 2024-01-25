@@ -37,9 +37,15 @@ class Slot(models.Model):
 
 
 class Service(models.Model):
+    type_service = models.ForeignKey(
+        'TypeService',
+        on_delete=models.SET_NULL,
+        related_name='services',
+        null=True
+    )
     title = models.CharField('Название услуги', max_length=200)
     price = models.DecimalField('Цена', max_digits=7, decimal_places=2)
-    picture = models.ImageField('Фото')
+    picture = models.ImageField('Фото', blank=True)
     master = models.ForeignKey(
         'Master',
         on_delete=models.CASCADE,
@@ -116,3 +122,10 @@ class Pay(models.Model):
         related_name='payments',
         null=True
     )
+
+
+class TypeService(models.Model):
+    title = models.CharField('Тип услуги', max_length=300)
+
+    def __str__(self):
+        return self.title
