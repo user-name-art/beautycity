@@ -3,11 +3,12 @@ from phonenumber_field.modelfields import PhoneNumberField
 
 
 class Studio(models.Model):
+    title = models.CharField('Название студии', max_length=100, null=True)
     addres = models.CharField('Адрес студии', max_length=200)
     photo = models.ImageField('Фото студии')
 
     def __str__(self):
-        return self.addres
+        return self.title
 
 
 class Master(models.Model):
