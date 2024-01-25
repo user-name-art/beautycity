@@ -106,3 +106,13 @@ class Comment(models.Model):
     def __str__(self):
         return f'{self.client}_{self.order}'
 
+
+class Pay(models.Model):
+    payment = models.DecimalField('Сумма оплаты', max_digits=7, decimal_places=2)
+    tips = models.DecimalField('Чаевые', max_digits=6, decimal_places=2)
+    order = models.ForeignKey(
+        'Order',
+        on_delete=models.SET_NULL,
+        related_name='payments',
+        null=True
+    )
