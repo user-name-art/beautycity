@@ -1,11 +1,27 @@
 from django.shortcuts import render
 
+from beauty.settings import MIN_SLIDER_COUNT
+from .models import Studio, Service, Master, Comment
+
 
 def show_home_page(request):
+    studios = Studio.objects.all()
+    services = Service.objects.all()
+    masters = Master.objects.all()
+    comments = Comment.objects.order_by("-id")[:5]
     return render(
         request,
         "index.html",
-        context={}  # todo
+        context=dict(
+            studios=studios,
+            studios_blanks=range(MIN_SLIDER_COUNT - studios.count()),
+            services=services,
+            services_blanks=range(MIN_SLIDER_COUNT - services.count()),
+            masters=masters,
+            masters_blanks=range(MIN_SLIDER_COUNT - masters.count()),
+            comments=comments,
+            comments_blanks=range(MIN_SLIDER_COUNT - comments.count())
+        )
     )
 
 
@@ -31,6 +47,7 @@ def show_notes(request):
         "notes.html",
         context={}  # todo
     )
+
 
 def show_popup(request):
     return render(
