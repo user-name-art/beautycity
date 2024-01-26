@@ -19,6 +19,8 @@ class Master(models.Model):
         related_name='masters',
         null=True)
     photo = models.ImageField('Фото')
+    profession = models.CharField('Специализация мастера', max_length=50, null=True)
+    experience = models.IntegerField('Стаж работы в годах', null=True)
 
     def __str__(self):
         return self.name

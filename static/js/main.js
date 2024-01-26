@@ -142,175 +142,83 @@ $(document).ready(function() {
 	  });
 	}
 
+	function sendRequest(studio_id, service_id) {
+		const csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+
+		function csrfSafeMethod(method) {
+			// these HTTP methods do not require CSRF protection
+			return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+		}
+	
+		$.ajaxSetup({
+			beforeSend: function (xhr, settings) {
+				// if not safe, set csrftoken
+				if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+					xhr.setRequestHeader("X-CSRFToken", csrftoken);
+				}
+			}
+		});
+
+		$.ajax({
+			type: "POST",
+			url: "./masters",
+			data: {
+				"studio_id": studio_id,
+				"service_id": service_id,
+			},
+			success: function (response) {
+				let mastersHTML = `
+						<div class="accordion__block fic">
+							<div class="accordion__block_elems fic">
+								<img src="img/masters/avatar/all.svg" alt="avatar" class="accordion__block_img">
+								<div class="accordion__block_master">Любой мастер</div>
+							</div>
+						</div>
+					`;
+				for (let master in response) {
+					mastersHTML += `
+						<div class="accordion__block fic" id="master_${response[master]['id']}">
+							<div class="accordion__block_elems fic">
+								<img src="{% static 'img/masters/avatar/pushkinskaya/1.svg' %}" alt="avatar" class="accordion__block_img">
+								<div class="accordion__block_master">${response[master]['name']}</div>
+							</div>
+							<div class="accordion__block_prof">${response[master]['prof']}</div>
+						</div>
+					`;
+				}
+				$('#masters').html(mastersHTML);
+			},
+			failure: function (data) {
+				console.log("failure");
+				console.log(data);
+			},
+		});
+	}
 
 	$(document).on('click', '.accordion__block', function(e) {
 		let thisName,thisAddress;
 
-		thisName = $(this).find('> .accordion__block_intro').text()
-		thisAddress = $(this).find('> .accordion__block_address').text()
-		
-		
-		if(thisName === 'BeautyCity Пушкинская') {
-			$('.service__masters > .panel').html(`
-				<div class="accordion__block fic">
-						  	<div class="accordion__block_elems fic">
-							  	<img src="img/masters/avatar/all.svg" alt="avatar" class="accordion__block_img">
-							  	<div class="accordion__block_master">Любой мастер</div>
-						  	</div>
-						  </div>
-						  <div class="accordion__block fic">
-						  	<div class="accordion__block_elems fic">
-							  	<img src="{% static 'img/masters/avatar/pushkinskaya/1.svg' %}" alt="avatar" class="accordion__block_img">
-							  	<div class="accordion__block_master">Елизавета Лапина</div>
-						  	</div>
-						  	<div class="accordion__block_prof">Мастер маникюра</div>
-						  </div>
-						  <div class="accordion__block fic">
-						  	<div class="accordion__block_elems fic">
-							  	<img src="img/masters/avatar/pushkinskaya/2.svg" alt="avatar" class="accordion__block_img">
-							  	<div class="accordion__block_master">Анна Сергеева</div>
-						  	</div>
-						  	<div class="accordion__block_prof">Парикмахер</div>
-						  </div>
-						  <div class="accordion__block fic">
-						  	<div class="accordion__block_elems fic">
-							  	<img src="img/masters/avatar/pushkinskaya/3.svg" alt="avatar" class="accordion__block_img">
-							  	<div class="accordion__block_master">Ева Колесова</div>
-						  	</div>
-						  	<div class="accordion__block_prof">Визажист</div>
-						  </div>
-						  <div class="accordion__block fic">
-						  	<div class="accordion__block_elems fic">
-							  	<img src="img/masters/avatar/pushkinskaya/4.svg" alt="avatar" class="accordion__block_img">
-							  	<div class="accordion__block_master">Мария Суворова</div>
-						  	</div>
-						  	<div class="accordion__block_prof">Стилист</div>
-						  </div>
-						  <div class="accordion__block fic">
-						  	<div class="accordion__block_elems fic">
-							  	<img src="img/masters/avatar/pushkinskaya/5.svg" alt="avatar" class="accordion__block_img">
-							  	<div class="accordion__block_master">Мария Максимова</div>
-						  	</div>
-						  	<div class="accordion__block_prof">Визажист</div>
-						  </div>
-						  <div class="accordion__block fic">
-						  	<div class="accordion__block_elems fic">
-							  	<img src="img/masters/avatar/pushkinskaya/6.svg" alt="avatar" class="accordion__block_img">
-							  	<div class="accordion__block_master">Анастасия Сергеева</div>
-						  	</div>
-						  	<div class="accordion__block_prof">Визажист</div>
-						  </div>	
-			`)
-			// $('.service__masters div[data-masters="Pushkinskaya"]').addClass('vib')
-		}
-		console.log(thisName)
-		if(thisName === 'BeautyCity Ленина') {
-			
-			$('.service__masters > .panel').html(`
-				<div class="accordion__block fic">
-						  	<div class="accordion__block_elems fic">
-							  	<img src="img/masters/avatar/all.svg" alt="avatar" class="accordion__block_img">
-							  	<div class="accordion__block_master">Любой мастер</div>
-						  	</div>
-						  </div>
-						  <div class="accordion__block fic">
-						  	<div class="accordion__block_elems fic">
-							  	<img src="img/masters/avatar/lenina/1.svg" alt="avatar" class="accordion__block_img">
-							  	<div class="accordion__block_master">Дарья Мартынова</div>
-						  	</div>
-						  	<div class="accordion__block_prof">Мастер маникюра</div>
-						  </div>
-						  <div class="accordion__block fic">
-						  	<div class="accordion__block_elems fic">
-							  	<img src="img/masters/avatar/lenina/2.svg" alt="avatar" class="accordion__block_img">
-							  	<div class="accordion__block_master">Амина Абрамова</div>
-						  	</div>
-						  	<div class="accordion__block_prof">Парикмахер</div>
-						  </div>
-						  <div class="accordion__block fic">
-						  	<div class="accordion__block_elems fic">
-							  	<img src="img/masters/avatar/lenina/3.svg" alt="avatar" class="accordion__block_img">
-							  	<div class="accordion__block_master">Милана Романова</div>
-						  	</div>
-						  	<div class="accordion__block_prof">Визажист</div>
-						  </div>
-						  <div class="accordion__block fic">
-						  	<div class="accordion__block_elems fic">
-							  	<img src="img/masters/avatar/lenina/4.svg" alt="avatar" class="accordion__block_img">
-							  	<div class="accordion__block_master">Диана Чернова</div>
-						  	</div>
-						  	<div class="accordion__block_prof">Стилист</div>
-						  </div>
-						  <div class="accordion__block fic">
-						  	<div class="accordion__block_elems fic">
-							  	<img src="img/masters/avatar/lenina/5.svg" alt="avatar" class="accordion__block_img">
-							  	<div class="accordion__block_master">Полина Лукьянова</div>
-						  	</div>
-						  	<div class="accordion__block_prof">Визажист</div>
-						  </div>
-						  <div class="accordion__block fic">
-						  	<div class="accordion__block_elems fic">
-							  	<img src="img/masters/avatar/lenina/6.svg" alt="avatar" class="accordion__block_img">
-							  	<div class="accordion__block_master">Вера Дмитриева</div>
-						  	</div>
-						  	<div class="accordion__block_prof">Визажист</div>
-						  </div>
-			`)
-		}
+		thisName = $(this).find('> .accordion__block_intro').text();
+		thisAddress = $(this).find('> .accordion__block_address').text();
+		thisId = $(this).attr('id');
+		thisType = $(this).attr('data-type');
 
-		if(thisName === 'BeautyCity Красная') {
-			$('.service__masters > .panel').html(`
-				<div class="accordion__block fic">
-						  	<div class="accordion__block_elems fic">
-							  	<img src="img/masters/avatar/all.svg" alt="avatar" class="accordion__block_img">
-							  	<div class="accordion__block_master">Любой мастер</div>
-						  	</div>
-						  </div>
-						  <div class="accordion__block fic">
-						  	<div class="accordion__block_elems fic">
-							  	<img src="img/masters/avatar/krasnaya/1.svg" alt="avatar" class="accordion__block_img">
-							  	<div class="accordion__block_master">Зоя Матвеева</div>
-						  	</div>
-						  </div>
-						  <div class="accordion__block fic">
-						  	<div class="accordion__block_elems fic">
-							  	<img src="img/masters/avatar/krasnaya/2.svg" alt="avatar" class="accordion__block_img">
-							  	<div class="accordion__block_master">Мария Родина</div>
-						  	</div>
-						  	<div class="accordion__block_prof">Мастер маникюра</div>
-						  </div>
-						  <div class="accordion__block fic">
-						  	<div class="accordion__block_elems fic">
-							  	<img src="img/masters/avatar/krasnaya/3.svg" alt="avatar" class="accordion__block_img">
-							  	<div class="accordion__block_master">Дарья Попова</div>
-						  	</div>
-						  	<div class="accordion__block_prof">Парикмахер</div>
-						  </div>
-						  <div class="accordion__block fic">
-						  	<div class="accordion__block_elems fic">
-							  	<img src="img/masters/avatar/krasnaya/4.svg" alt="avatar" class="accordion__block_img">
-							  	<div class="accordion__block_master">Ева Семенова</div>
-						  	</div>
-						  	<div class="accordion__block_prof">Визажист</div>
-						  </div>
-						  <div class="accordion__block fic">
-						  	<div class="accordion__block_elems fic">
-							  	<img src="img/masters/avatar/krasnaya/5.svg" alt="avatar" class="accordion__block_img">
-							  	<div class="accordion__block_master">Вера Романова</div>
-						  	</div>
-						  	<div class="accordion__block_prof">Стилист</div>
-						  </div>
-						  <div class="accordion__block fic">
-						  	<div class="accordion__block_elems fic">
-							  	<img src="img/masters/avatar/krasnaya/6.svg" alt="avatar" class="accordion__block_img">
-							  	<div class="accordion__block_master">Валерия Зуева</div>
-						  	</div>
-						  	<div class="accordion__block_prof">Визажист</div>
-						  </div>
-			`)
-			
-		}
+		if (thisType === 'studio') {
+			const id = thisId.slice(7);
+			$('#selected_studio').val(id);
+			const selected_service = $('#selected_service').val();
 
+			if (selected_service) {
+				sendRequest(id, selected_service);
+			}
+
+			// const masters = $('*[data-type="masters"]').each(function(index) {
+			// 	$(this).hide();
+			// });
+
+			// $(`#masters_${id}[data-type="masters"]`).show();
+		}
+	
 		$(this).parent().parent().find('> button.active').addClass('selected').text(thisName + '  ' +thisAddress)
 		setTimeout(() => {
 			$(this).parent().parent().find('> button.active').click()
@@ -328,6 +236,26 @@ $(document).ready(function() {
 		let thisName,thisAddress;
 		thisName = $(this).find('> .accordion__block_item_intro').text()
 		thisAddress = $(this).find('> .accordion__block_item_address').text()
+
+		thisId = $(this).attr('id');
+		thisType = $(this).attr('data-type');
+
+		if (thisType === 'service') {
+			const id = thisId.slice(8);
+			$('#selected_service').val(id);
+			const selected_studio = $('#selected_studio').val();
+
+			if (selected_service) {
+				sendRequest(selected_studio, id);
+			}
+
+			// const masters = $('*[data-type="masters"]').each(function(index) {
+			// 	$(this).hide();
+			// });
+
+			// $(`#masters_${id}[data-type="masters"]`).show();
+		}
+
 		$(this).parent().parent().parent().parent().find('> button.active').addClass('selected').text(thisName + '  ' +thisAddress)
 		// $(this).parent().parent().parent().parent().find('> button.active').click()
 		// $(this).parent().parent().parent().addClass('hide')

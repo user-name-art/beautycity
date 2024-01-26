@@ -1,4 +1,6 @@
 from django.shortcuts import render
+from beautycityapp.models import Studio, TypeService
+from django.http import JsonResponse
 
 from beauty.settings import MIN_SLIDER_COUNT
 from .models import Studio, Service, Master, Comment
@@ -26,10 +28,16 @@ def show_home_page(request):
 
 
 def show_service(request):
+    studios = Studio.objects.all()
+    types_service = TypeService.objects.all()
+    context = {
+        'studios': studios,
+        'types_service': types_service
+    }
     return render(
         request,
         "service.html",
-        context={}  # todo
+        context # todo
     )
 
 
