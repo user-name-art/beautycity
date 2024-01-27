@@ -9,9 +9,11 @@ from beautycityapp.models import (
     Order,
     Comment,
     Pay,
-    TypeService
+    TypeService,
+    MastersService
 )
 from .forms import StudioForm, ServiceForm, MasterForm
+
 
 # Register your models here.
 admin.site.register(Slot)
@@ -20,7 +22,7 @@ admin.site.register(Order)
 admin.site.register(Comment)
 admin.site.register(Pay)
 admin.site.register(TypeService)
-
+admin.site.register(MastersService)
 
 @admin.register(Studio)
 class StudioAdmin(admin.ModelAdmin):
@@ -41,3 +43,4 @@ class ServiceAdmin(admin.ModelAdmin):
     list_display = ("title",)
     search_fields = ("title",)
     form = ServiceForm
+

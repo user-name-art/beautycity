@@ -125,7 +125,59 @@ $(document).ready(function() {
 		$('#mobMenu').hide()
 	})
 
-	new AirDatepicker('#datepickerHere')
+	function getSlots(master_id, selected_day) {
+		const csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+
+		function csrfSafeMethod(method) {
+			// these HTTP methods do not require CSRF protection
+			return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+		}
+	
+		$.ajaxSetup({
+			beforeSend: function (xhr, settings) {
+				// if not safe, set csrftoken
+				if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+					xhr.setRequestHeader("X-CSRFToken", csrftoken);
+				}
+			}
+		});
+
+		$.ajax({
+			type: "POST",
+			url: "./slots",
+			data: {
+				"master_id": master_id,
+				"selected_day": selected_day,
+			},
+			success: function (response) {
+				let slotsHTML = ``;
+				for (let slot in response) {
+					console.log(response[slot])
+					slotsHTML += `
+						<button data-time="${response[slot]['time']}" class="time__elems_btn" id="slots_${response[slot]['id']}">${response[slot]['time']}</button>
+					`;
+				}
+				$('#slots').html(slotsHTML);
+			},
+			failure: function (data) {
+				console.log("failure");
+				console.log(data);
+			},
+		});
+	}
+
+	new AirDatepicker('#datepickerHere', {
+		onSelect({formattedDate}) {
+			const [day, month, year] = formattedDate.split('.');
+			const date = `${year}-${month}-${day}`;
+
+			$('#selected_day').val(date);
+			const selected_master = $('#selected_master').val();
+			if (selected_master) {
+				getSlots(selected_master, date);
+			}
+		}
+	});
 
 	var acc = document.getElementsByClassName("accordion");
 	var i;
@@ -142,7 +194,7 @@ $(document).ready(function() {
 	  });
 	}
 
-	function sendRequest(studio_id, service_id) {
+	function getMasters(studio_id, service_id) {
 		const csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
 
 		function csrfSafeMethod(method) {
@@ -177,7 +229,7 @@ $(document).ready(function() {
 					`;
 				for (let master in response) {
 					mastersHTML += `
-						<div class="accordion__block fic" id="master_${response[master]['id']}">
+						<div class="accordion__block fic" id="master_${response[master]['id']}" data-type="master">
 							<div class="accordion__block_elems fic">
 								<img src="{% static 'img/masters/avatar/pushkinskaya/1.svg' %}" alt="avatar" class="accordion__block_img">
 								<div class="accordion__block_master">${response[master]['name']}</div>
@@ -195,6 +247,8 @@ $(document).ready(function() {
 		});
 	}
 
+
+
 	$(document).on('click', '.accordion__block', function(e) {
 		let thisName,thisAddress;
 
@@ -202,6 +256,7 @@ $(document).ready(function() {
 		thisAddress = $(this).find('> .accordion__block_address').text();
 		thisId = $(this).attr('id');
 		thisType = $(this).attr('data-type');
+		console.log(thisId)
 
 		if (thisType === 'studio') {
 			const id = thisId.slice(7);
@@ -209,7 +264,7 @@ $(document).ready(function() {
 			const selected_service = $('#selected_service').val();
 
 			if (selected_service) {
-				sendRequest(id, selected_service);
+				getMasters(id, selected_service);
 			}
 
 			// const masters = $('*[data-type="masters"]').each(function(index) {
@@ -217,6 +272,15 @@ $(document).ready(function() {
 			// });
 
 			// $(`#masters_${id}[data-type="masters"]`).show();
+		}
+
+		if (thisType === 'master') {
+			const id = thisId.slice(7);
+			$('#selected_master').val(id);
+			const selected_day = $('#selected_day').val();
+			if (selected_day) {
+				getSlots(id, selected_day);
+			}
 		}
 	
 		$(this).parent().parent().find('> button.active').addClass('selected').text(thisName + '  ' +thisAddress)
@@ -246,7 +310,7 @@ $(document).ready(function() {
 			const selected_studio = $('#selected_studio').val();
 
 			if (selected_service) {
-				sendRequest(selected_studio, id);
+				getMasters(selected_studio, id);
 			}
 
 			// const masters = $('*[data-type="masters"]').each(function(index) {
@@ -328,10 +392,19 @@ $(document).ready(function() {
 	})
 
 	//service
-	$('.time__items .time__elems_elem .time__elems_btn').click(function(e) {
+	// $('.time__items .time__elems_elem .time__elems_btn').click(function(e) {
+	// 	e.preventDefault()
+	// 	$('.time__elems_btn').removeClass('active')
+	// 	$(this).addClass('active')
+	// 	// $(this).hasClass('active') ? $(this).removeClass('active') : $(this).addClass('active')
+	// })
+	$(document).on('click', '.time__items .time__elems_elem .time__elems_btn', function(e) {
 		e.preventDefault()
 		$('.time__elems_btn').removeClass('active')
 		$(this).addClass('active')
+		thisId = $(this).attr('id');
+		thisTime = $(this).attr('data-time');
+		$('#selected_time').val(thisTime);
 		// $(this).hasClass('active') ? $(this).removeClass('active') : $(this).addClass('active')
 	})
 
@@ -340,7 +413,47 @@ $(document).ready(function() {
 			$('.time__btns_next').addClass('active')
 		}
 	})
+
+	$(document).on('click', '.time__btns_next', function() {
+		console.log($('#selected_service').val())
+		console.log($('#selected_studio').val())
+		console.log($('#selected_master').val())
+		console.log($('#selected_day').val())
+		console.log($('#selected_time').val())
+		const csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+
+		function csrfSafeMethod(method) {
+			// these HTTP methods do not require CSRF protection
+			return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+		}
 	
+		$.ajaxSetup({
+			beforeSend: function (xhr, settings) {
+				// if not safe, set csrftoken
+				if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+					xhr.setRequestHeader("X-CSRFToken", csrftoken);
+				}
+			}
+		});
 
-
+		$.ajax({
+			type: "POST",
+			url: "./order",
+			data: {
+				"studio_id": $('#selected_studio').val(),
+				"service_id": $('#selected_service').val(),
+				"master_id": $('#selected_master').val(),
+				"selected_day": $('#selected_day').val(),
+				'selected_slot': $('#selected_time').val()
+			},
+			success: function (response) {
+				console.log("success");
+				console.log(response);
+			},
+			failure: function (data) {
+				console.log("failure");
+				console.log(data);
+			},
+		});
+	})
 })
