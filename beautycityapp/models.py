@@ -1,5 +1,6 @@
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
+from datetime import datetime   
 
 
 class Studio(models.Model):
@@ -33,7 +34,8 @@ class Slot(models.Model):
         'Master',
         on_delete=models.CASCADE,
         related_name='slots',
-        null=True)
+        null=True
+    )
     
     def __str__(self):
         return f'{self.day}_{self.master}'
@@ -47,17 +49,26 @@ class Service(models.Model):
         null=True
     )
     title = models.CharField('Название услуги', max_length=200)
-    price = models.DecimalField('Цена', max_digits=7, decimal_places=2)
     picture = models.ImageField('Фото', blank=True)
+    min_price = models.IntegerField('Минимальная цена услуги', null=True)
+
+    
+    def __str__(self):
+        return f'{self.title}'
+
+
+class MastersService(models.Model):
     master = models.ForeignKey(
         'Master',
         on_delete=models.CASCADE,
-        related_name='services',
+        related_name='master_services',
         null=True)
-    
-    def __str__(self):
-        return f'{self.title}_{self.master}'
-
+    service = models.ForeignKey(
+        'Service',
+        on_delete=models.CASCADE,
+        related_name='master_services',
+        null=True)
+    price = models.IntegerField('Цена')
 
 class Client(models.Model):
     name = models.CharField('Имя клиента', max_length=50)

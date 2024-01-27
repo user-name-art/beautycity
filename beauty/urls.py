@@ -18,7 +18,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
-from beautycityapp import views, masters
+from beautycityapp import views, masters, slots, order
 
 urlpatterns = [
     path('admin_panel/', admin.site.urls),
@@ -29,7 +29,8 @@ urlpatterns = [
     path('popup/', views.show_popup),
     path('service_finally/', views.show_service_finally),
     path('service/masters', masters.get_masters),
-    # path('service/ser', masters.get_ser),
+    path('service/slots', slots.get_slots),
+    path('service/order', order.make_order),
 ]
 
 if settings.DEBUG:
