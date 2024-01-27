@@ -195,6 +195,7 @@ $(document).ready(function() {
 	}
 
 	function getMasters(studio_id, service_id) {
+		const static_path = $('#static_path').val()
 		const csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
 
 		function csrfSafeMethod(method) {
@@ -222,7 +223,7 @@ $(document).ready(function() {
 				let mastersHTML = `
 						<div class="accordion__block fic">
 							<div class="accordion__block_elems fic">
-								<img src="img/masters/avatar/all.svg" alt="avatar" class="accordion__block_img">
+								<img src="${static_path}img/masters/avatar/pushkinskaya/1.svg" alt="avatar" class="accordion__block_img">
 								<div class="accordion__block_master">Любой мастер</div>
 							</div>
 						</div>
@@ -231,7 +232,7 @@ $(document).ready(function() {
 					mastersHTML += `
 						<div class="accordion__block fic" id="master_${response[master]['id']}" data-type="master">
 							<div class="accordion__block_elems fic">
-								<img src="{% static 'img/masters/avatar/pushkinskaya/1.svg' %}" alt="avatar" class="accordion__block_img">
+								<img src="${response[master]['photo_url']}" alt="avatar" class="accordion__block_img">
 								<div class="accordion__block_master">${response[master]['name']}</div>
 							</div>
 							<div class="accordion__block_prof">${response[master]['prof']}</div>

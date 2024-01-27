@@ -20,7 +20,8 @@ def get_masters(request):
             studio_masters[master.master.id] = {
                 'id': master.master.id,
                 'name': master.master.name,
-                'prof': master.master.profession
+                'prof': master.master.profession,
+                'photo_url': master.master.photo.url
             }
         return JsonResponse(studio_masters) 
 
