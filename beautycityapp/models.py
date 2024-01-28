@@ -12,16 +12,35 @@ class Studio(models.Model):
         return self.title
 
 
+class Profession(models.Model):
+    title = models.CharField('Название специальности', max_length=25)
+    master = models.ManyToManyField(
+        'Master',
+        related_name='professions'
+    )
+
+    def __str__(self):
+        return self.title
+
+
 class Master(models.Model):
     name = models.CharField('Имя мастера', max_length=50)
     studio = models.ForeignKey(
         'Studio',
         on_delete=models.SET_NULL,
         related_name='masters',
-        null=True)
+        null=True
+    )
     photo = models.ImageField('Фото')
-    profession = models.CharField('Специализация мастера', max_length=50, null=True)
+    profession = models.ManyToManyField(
+        'Profession',
+        related_name='masters'
+    )
     experience = models.IntegerField('Стаж работы в годах', null=True)
+    service = models.ManyToManyField(
+        'Service',
+        related_name='masters'
+    )
 
     def __str__(self):
         return self.name
@@ -50,25 +69,16 @@ class Service(models.Model):
     )
     title = models.CharField('Название услуги', max_length=200)
     picture = models.ImageField('Фото', blank=True)
-    min_price = models.IntegerField('Минимальная цена услуги', null=True)
+    price = models.IntegerField('Минимальная цена услуги', null=True)
+    master = models.ManyToManyField(
+        'Master',
+        related_name='services',
+    )
 
     
     def __str__(self):
         return f'{self.title}'
 
-
-class MastersService(models.Model):
-    master = models.ForeignKey(
-        'Master',
-        on_delete=models.CASCADE,
-        related_name='master_services',
-        null=True)
-    service = models.ForeignKey(
-        'Service',
-        on_delete=models.CASCADE,
-        related_name='master_services',
-        null=True)
-    price = models.IntegerField('Цена')
 
 class Client(models.Model):
     name = models.CharField('Имя клиента', max_length=50)
