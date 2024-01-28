@@ -24,7 +24,7 @@ from beautycityapp.views import UserRegistrationView, UserLoginView, OTPVerifica
 
 urlpatterns = [
     path('admin_panel/', admin.site.urls),
-    path('', views.show_home_page),
+    path('', views.show_home_page, name='main'),
     path('service/', views.show_service),
     path('admin/', views.show_admin),
     path('notes/', views.show_notes),
@@ -35,6 +35,7 @@ urlpatterns = [
     path('service/order', order.make_order),
     path('register/', UserRegistrationView.as_view(), name='user_registration'),
     path('login/', UserLoginView.as_view(), name='user_login'),
+    path('logout/', views.user_logout, name='logout'),
     path('verify-otp/', OTPVerificationView.as_view(), name='otp_verification'),
 ]
 

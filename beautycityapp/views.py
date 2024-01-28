@@ -12,7 +12,8 @@ import random
 from django.contrib.auth import get_user_model
 from smsru.service import SmsRuApi
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
+from datetime import date
 
 
 def show_home_page(request):
@@ -62,10 +63,25 @@ def show_admin(request):
 def show_notes(request):
     user = request.user
     orders = user.orders.all()
+    sum_cost = 0
+    new_orders, old_orders = [], []
+    for order in orders:
+        print(order.slot.day)
+        if order.slot.day >= date.today():
+            new_orders.append(order)
+            sum_cost += order.cost
+        else:
+            old_orders.append(order)
+
     return render(
         request,
         "notes.html",
-        context={'orders': orders}  # todo
+        context={
+                'new_orders': new_orders,
+                'old_orders': old_orders,
+                'sum_cost': sum_cost,
+                'user': user
+        }
     )
 
 
@@ -162,6 +178,11 @@ class UserLoginView(View):
             login(request, user)
 
         return render(request, 'index.html', {'phone_number': mobile_number})
+
+
+def user_logout(request):
+    logout(request)
+    return render(request, 'index.html')
 
 
 def generate_otp():

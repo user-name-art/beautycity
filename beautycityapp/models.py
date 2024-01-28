@@ -38,7 +38,7 @@ class Slot(models.Model):
         related_name='slots',
         null=True
     )
-    
+
     def __str__(self):
         return f'{self.day}_{self.master}'
 
@@ -54,7 +54,7 @@ class Service(models.Model):
     picture = models.ImageField('Фото', blank=True)
     min_price = models.IntegerField('Минимальная цена услуги', null=True)
 
-    
+
     def __str__(self):
         return f'{self.title}'
 
@@ -71,7 +71,7 @@ class MastersService(models.Model):
         related_name='master_services',
         null=True)
     price = models.IntegerField('Цена')
-    
+
 
 class Client(AbstractBaseUser):
     VERIFICATION_TYPE = [
@@ -114,7 +114,7 @@ class Order(models.Model):
         related_name='orders',
         null=True
     )
-    promocode = models.CharField(blank=True,null=True, max_length=20)
+    promocode = models.CharField(blank=True, null=True, max_length=20)
     slot = models.ForeignKey(
         'Slot',
         on_delete=models.SET_NULL,
