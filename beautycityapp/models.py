@@ -87,7 +87,7 @@ class Client(AbstractBaseUser):
     is_superuser = models.BooleanField(default=False)
     pdf_file = models.FileField('Согласие на обработку персональных данных')
 
-    USERNAME_FIELD = "phone_number"
+    USERNAME_FIELD = 'phone_number'
     objects = UserManager()
 
     def __str__(self):
