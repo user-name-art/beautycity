@@ -27,7 +27,7 @@ urlpatterns = [
     path('', views.show_home_page, name='main'),
     path('service/', views.show_service),
     path('admin/', views.show_admin),
-    path('notes/', views.show_notes),
+    path('notes/', views.show_notes, name='notes'),
     path('popup/', views.show_popup),
     path('service_finally/', views.show_service_finally),
     path('service/masters', masters.get_masters),
