@@ -19,6 +19,8 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
 from beautycityapp import views, masters, slots, order
+from beautycityapp.views import UserRegistrationView, UserLoginView, OTPVerificationView
+
 
 urlpatterns = [
     path('admin_panel/', admin.site.urls),
@@ -31,6 +33,9 @@ urlpatterns = [
     path('service/masters', masters.get_masters),
     path('service/slots', slots.get_slots),
     path('service/order', order.make_order),
+    path('register/', UserRegistrationView.as_view(), name='user_registration'),
+    path('login/', UserLoginView.as_view(), name='user_login'),
+    path('verify-otp/', OTPVerificationView.as_view(), name='otp_verification'),
 ]
 
 if settings.DEBUG:

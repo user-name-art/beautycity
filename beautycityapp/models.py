@@ -1,6 +1,8 @@
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
-from datetime import datetime   
+from datetime import datetime
+from django.contrib.auth.models import AbstractBaseUser
+from .managers import UserManager
 
 
 class Studio(models.Model):
@@ -69,14 +71,33 @@ class MastersService(models.Model):
         related_name='master_services',
         null=True)
     price = models.IntegerField('Цена')
+    
 
-class Client(models.Model):
+class Client(AbstractBaseUser):
+    VERIFICATION_TYPE = [
+        ('sms', 'SMS'),
+    ]
+
     name = models.CharField('Имя клиента', max_length=50)
-    phone_number = PhoneNumberField('Номер телефона')
+    phone_number = PhoneNumberField('Номер телефона', unique=True)
+    verification_method = models.CharField(max_length=10, choices=VERIFICATION_TYPE)
+    is_active = models.BooleanField(default=True)
+    is_admin = models.BooleanField(default=False)
+    is_staff = models.BooleanField(default=False)
+    is_superuser = models.BooleanField(default=False)
     pdf_file = models.FileField('Согласие на обработку персональных данных')
 
+    USERNAME_FIELD = "phone_number"
+    objects = UserManager()
+
     def __str__(self):
-        return self.name
+        return str(self.phone_number)
+
+    def has_perm(self, perm, obj=None):
+        return self.is_admin
+
+    def has_module_perms(self, app_label):
+        return self.is_admin
 
 
 class Order(models.Model):

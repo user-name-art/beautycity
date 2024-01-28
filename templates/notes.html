@@ -242,7 +242,7 @@
 												<div class="notes__main_block__main_elems__intro otes__main_blockWidth">Дата и время:</div>
 											</div>
 											<div class="notes__main_block__main_elems fic">
-												<div class="notes__main_block__main_elems__name otes__main_blockWidth">Ева Колесова</div>
+												<div class="notes__main_block__main_elems__name otes__main_blockWidth">кто-то</div>
 												<div class="notes__main_block__main_elems__date otes__main_blockWidth">29 ноября - 13:30 </div>
 											</div>
 										</div>
@@ -255,6 +255,11 @@
 										<div class="notes__main_pay unPaid">НЕОПЛАЧЕНО</div>
 									</div>
 								</div>
+							</div>
+							<div>
+								{% for order in orders %}
+									{{ order }}
+								{% endfor %}
 							</div>
 							<div class="notes__main_block">
 								<img src="{% static 'img/services/service1.svg' %}" alt="service1" class="notes__main_block__img">
