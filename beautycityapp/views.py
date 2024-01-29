@@ -145,6 +145,7 @@ class UserRegistrationView(View):
                     api = SmsRuApi()
                     result = api.send_one_sms(phone_number, otp)
                     print(result)
+                    print(phone_number, otp)
 
                 request.session['otp'] = otp
                 request.session['phone_number'] = phone_number

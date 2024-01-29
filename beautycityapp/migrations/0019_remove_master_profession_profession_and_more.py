@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('beautycityapp', '0017_rename_min_price_service_price_master_service_and_more'),
+        ('beautycityapp', '0018_client_is_active_client_is_admin_client_is_staff_and_more'),
     ]
 
     operations = [

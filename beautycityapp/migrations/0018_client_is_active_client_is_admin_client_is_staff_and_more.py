@@ -7,7 +7,7 @@ import phonenumber_field.modelfields
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('beautycityapp', '0016_service_min_price'),
+        ('beautycityapp', '0017_rename_min_price_service_price_master_service_and_more'),
     ]
 
     operations = [

@@ -142,5 +142,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'beautycityapp.Client'
 
 SMS_RU = {
-    "API_ID": '65111E9A-5105-4175-84FB-6F70BA4D06AF',
+    "API_ID": env.str('SMS_API'),
 }
