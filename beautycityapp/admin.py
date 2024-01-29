@@ -10,7 +10,7 @@ from beautycityapp.models import (
     Comment,
     Pay,
     TypeService,
-    MastersService
+    Profession
 )
 from .forms import StudioForm, ServiceForm, MasterForm
 
@@ -22,7 +22,8 @@ admin.site.register(Order)
 admin.site.register(Comment)
 admin.site.register(Pay)
 admin.site.register(TypeService)
-admin.site.register(MastersService)
+admin.site.register(Profession)
+
 
 @admin.register(Studio)
 class StudioAdmin(admin.ModelAdmin):

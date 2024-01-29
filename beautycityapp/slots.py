@@ -18,6 +18,4 @@ def get_slots(request):
                 'id': slot.id,
                 'time': str(slot.time)[:-3],
             }
-            print(slot.id)
-            print(slot.time)
         return JsonResponse(master_slots) 

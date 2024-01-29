@@ -24,6 +24,7 @@
 	<input type="hidden" id="selected_master">
 	<input type="hidden" id="selected_day">
 	<input type="hidden" id="selected_time">
+	<input type="hidden" id="static_path" value="{% static '' %}">
 	<section id="mobMenu">
 			<div class="mobMenu">
 				<div class="container">
@@ -141,7 +142,7 @@
 										<div class=" accordion__block_items">
 											<div class="accordion__block_item fic" id="service_{{service.id}}" data-type="service">
 												<div class="accordion__block_item_intro">{{service.title}}</div>
-												<div class="accordion__block_item_address">{{service.min_price}}</div>
+												<div class="accordion__block_item_address">{{service.price}}</div>
 											</div>
 										</div>
 									{% endfor %}
