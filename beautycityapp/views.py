@@ -1,25 +1,23 @@
+import random
+from datetime import date
+
+from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
-from beautycityapp.models import Studio, TypeService
-from django.http import JsonResponse
+from django.views import View
+from smsru.service import SmsRuApi
 
 from beauty.settings import MIN_SLIDER_COUNT
-from .models import Studio, Service, Master, Comment, Client
-
-from django.views import View
 from .forms import UserRegistrationForm, UserLoginForm
-from django.contrib import messages
-import random
-from django.contrib.auth import get_user_model
-from smsru.service import SmsRuApi
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate, login, logout
-from datetime import date
+from .models import Studio, Service, Master, Comment, TypeService
 
 
 def show_home_page(request):
     studios = Studio.objects.all()
-    services = Service.objects.all()
-    masters = Master.objects.all()
+    services = Service.objects.all()[:10]
+    masters = Master.objects.all()[:10]
     comments = Comment.objects.order_by("-id")[:5]
     return render(
         request,
@@ -40,14 +38,13 @@ def show_home_page(request):
 def show_service(request):
     studios = Studio.objects.all()
     types_service = TypeService.objects.all()
-    context = {
-        'studios': studios,
-        'types_service': types_service
-    }
     return render(
         request,
         "service.html",
-        context={}  # todo
+        context=dict(
+            studios=studios,
+            types_service=types_service
+        )
     )
 
 
